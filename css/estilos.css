@@ -16,10 +16,10 @@ body {
     margin: 0 auto;
     padding: 0 20px;
     background-color: rgba(61, 178, 236, 0.882);
-    border-radius: 4%;
 }
 input{
     width: 200px;
+    margin-left: 600px;
 }
 button{
     width: 100px;
