@@ -19,14 +19,14 @@ body {
 }
 input{
     width: 200px;
-    margin-left: 430px;
+    margin-left: 450px;
 }
 label{
-    margin-left: 430px;
+    margin-left: 450px;
 }
 button{
     width: 100px;
-    margin-left: 480px;
+    margin-left: 490px;
 }
 .centro{
     text-align: center;
