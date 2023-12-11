@@ -60,13 +60,125 @@
             <input type="tel" id="telefono" name="telefono" required>
             
             <label for="correo">Correo Electrónico:</label>
-            <input type="email" id="correo" name="correo" required>
+            <input type="email" id="email" name="email" required>
 
             <label for="fecha">Fecha:</label>
             <input type="date" id="fecha" name="fecha" required>
             
-            <button type="submit">Enviar Reserva</button>
+            <button type="button" onclick="crearRegistro()">Enviar Reserva</button>
+    </form>
         </form>
+        <ul id="lista-registros"></ul>
+
+        <script type="module">
+           // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyAYYHfHIO3GjsNFLJ1DoNzqjWAr21ZoEVg",
+          authDomain: "proyecto-falcon25.firebaseapp.com",
+          databaseURL: "https://proyecto-falcon25-default-rtdb.firebaseio.com",
+          projectId: "proyecto-falcon25",
+          storageBucket: "proyecto-falcon25.appspot.com",
+          messagingSenderId: "897557394941",
+          appId: "1:897557394941:web:a995638cdfb6b7e1735594"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+const listaRegistro = document.getElementById("registrar");
+
+function actualizarLista() {
+    listaRegistro.innerHTML = ""; // Limpiar la lista antes de actualizar
+
+    const controladoresRef = ref(database, 'OÑA');
+
+    onValue(controladoresRef, (snapshot) => {
+        const datos = snapshot.val();
+
+        for (let key in datos) {
+            const reserva = datos[key];
+
+            const li = document.createElement("li");
+            li.textContent = Código: ${reserva.codigo}, Nombre: ${reserva.nombre}, Telefono: ${reserva.telefono}, Email: ${reserva.email.}, Fecha: ${reserva.Fecha};
+
+            const editarButton = document.createElement("button");
+            editarButton.textContent = "Editar";
+            editarButton.onclick = () => editar(key, reserva);
+            li.appendChild(editarButton);
+
+            const eliminarButton = document.createElement("button");
+            eliminarButton.textContent = "Eliminar";
+            eliminarButton.onclick = () => eliminar(key);
+            li.appendChild(eliminarButton);
+
+            listaRegistro.appendChild(li);
+        }
+    });
+}
+
+window.guardar = function () {
+    const codigo = document.getElementById("codigo").value;
+    const nombre = document.getElementById("nombre").value;
+    const telefono = document.getElementById("telefono").value;
+    const email = document.getElementById("email").value;
+    const fecha = document.getElementById("fecha").value;
+    
+    push(
+        ref(database, 'OÑA'),
+        {
+            codigo: codigo,
+            nombre: nombre,
+            telefono: telefono,
+            email: email,
+            fecha: fecha
+        }
+    );
+
+    document.getElementById('codigo').value = '';
+    document.getElementById('nombre').value = '';
+    document.getElementById('telefono').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('fecha').value = '';
+
+    actualizarLista(); // Actualizar la lista después de guardar
+}
+
+window.editar = function (key, reserva) {
+    const nuevoCodigo = prompt("Nuevo Código:", reserva.codigo);
+    const nuevoNombre = prompt("Nueva Nombre:", reserva.nombre);
+    const nuevoTelefono = prompt("Nuevo Telefono:", reserva.telefono);
+    const nuevaEmail = prompt("Nuevo Correo:", reserva.email);
+    const nuevaFecha = prompt("Nueva Fecha:",reserva.fecha);
+
+    update(child(ref(database, 'OÑA'), key), {
+        codigo: nuevoCodigo,
+        nombre: nuevoNombre,
+        telefono: nuevoTelefono,
+        email: nuevaEmail,
+        fecha: nuevaFecha
+    });
+
+    actualizarLista(); // Actualizar la lista después de editar
+}
+
+window.eliminar = function (key) {
+    const confirmacion = confirm("¿Estás seguro de que deseas eliminar este registro?");
+    if (confirmacion) {
+        remove(child(ref(database, 'OÑA'), key));
+        actualizarLista(); // Actualizar la lista después de eliminar
+    }
+}
+
+// Actualizar la lista al cargar la página
+actualizarLista();
+</script>
+        </script>
     </div>
 </section>
 <section>
